@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import lombok.Data;
-import lombok.NonNull;
+import lombok.Getter;
 
 @Data public class LogfileParser {
 	
 	private LogfileReader logReader;;
-	
-	ArrayList<String> rawDataStrings;;
-	ArrayList<LogfileData> data;
+	@Getter
+	private ArrayList<String> rawDataStrings;
+	private ArrayList<LogfileData> data;
 	
 	public LogfileParser() {
 		try {
@@ -30,6 +30,12 @@ import lombok.NonNull;
 		data = new ArrayList<>();
 	}
 	
+	public LogfileData buildData(String date, String sessionId, String appName, 
+					String severity, String text, String context) {
+		
+		return new LogfileData(date, sessionId, appName, severity, text, context);
+	}
+	
 	 public void parseData() {
 		String date = null;
 		String sessionId= null;
@@ -38,28 +44,31 @@ import lombok.NonNull;
 		String text= null;
 		String context= null;
 		
+		//rds is the raw Data String for a log entry
 		for(String rds : rawDataStrings) {
-			System.out.println(rds);
+			
 			date = rds.substring(1, rds.indexOf("]"));
 			rds = rds.substring(rds.indexOf("]")+2);
-			//System.out.println(rds);
+			
 			sessionId = rds.substring(1, rds.indexOf("]"));
 			rds = rds.substring(rds.indexOf("]")+2);
-			//System.out.println(rds);
+			
 			appName = rds.substring(0, rds.indexOf("."));
 			rds = rds.substring(rds.indexOf(".")+1);
 			
 			severity = rds.substring(0, rds.indexOf(":"));
 			rds = rds.substring(rds.indexOf(":")+2);
-			System.out.println(rds);
+			
 			text = rds.substring(0, rds.indexOf("[") -1);
 			rds = rds.substring(rds.indexOf("["));
-			System.out.println(rds);
+			
 			context = rds.substring(1, rds.length()-1);
 			
-			System.out.println(date+" "+sessionId+" "+appName+" "+severity+" "+text+" "+context);
+			data.add(buildData(date, sessionId, appName, severity, text, context));
+			
 		}
-	
 	}
+	 
+	
 	
 }

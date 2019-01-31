@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class LogfileReader {
 	BufferedReader br;
-	ArrayList<String> fileData = new ArrayList<>();
+	ArrayList<String> rawDataStrings = new ArrayList<>();
 	
 	public LogfileReader(String logfile) throws IOException  {
 		loadFile(logfile);
@@ -21,12 +21,14 @@ public class LogfileReader {
 		String temp;
 		
 		while((temp = br.readLine()) != null) {
-			fileData.add(temp);
+			rawDataStrings.add(temp);
 		}
+		
+		br.close();
 	}
 	
 	public ArrayList<String> getFileData() {
-		return fileData;
+		return rawDataStrings;
 	}
 	
 	

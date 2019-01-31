@@ -27,6 +27,7 @@ public class Main extends Application {
        LogfileParser lp = new LogfileParser();
        lp.parseData();
        
+       
     }
  
     
