@@ -13,6 +13,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -208,10 +210,18 @@ public class Main extends Application {
 				if(destination != null) {
 					try {
 						LogfileWriter.writeBackToFile(selectedEntities, destination);
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle("Erfolgreich gespeichert");
+						alert.setHeaderText(null);
+						alert.setContentText("Es wurde eine Logdatei mit den modifizierten Ergebnissen erzeugt.");
+						alert.showAndWait();
+						
 					} catch (FileNotFoundException e) {						
 						e.printStackTrace();
 					}
 				}
+				
+				
 			}
 		});
 	}

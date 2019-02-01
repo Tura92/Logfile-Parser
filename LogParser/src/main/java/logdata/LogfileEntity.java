@@ -1,12 +1,13 @@
 package logdata;
 
-import logcontrol.LogfileConstructor;
+import logcontrol.LogfileParser;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
-@Builder
-public class LogfileEntity {
+/**
+ *Entity 
+ * */
+@Data @Builder public class LogfileEntity {
 	
 	private String date;
 	private String sessionId;
@@ -17,7 +18,7 @@ public class LogfileEntity {
 	
 	@Override
 	public String toString() {
-		return LogfileConstructor.construct(this);
+		return LogfileParser.construct(this);
 	}
 	
 }

@@ -1,11 +1,16 @@
 package logcontrol;
 
-
 import java.util.ArrayList;
 
 import logdata.LogfileEntity;
 import lombok.Getter;
 
+/**
+ * Diese Klasse ist der eigentlich Parser für die .log Dateien. 
+ * Er besitzt nur eine statische Methode die die rohen Strings
+ * aus den logs extrahiert und ein gespaltetes und verarbeitbares
+ * Format wieder ausgibt.
+ * **/
 @Getter
 public class LogfileParser {
 		
@@ -53,5 +58,13 @@ public class LogfileParser {
 		}
 		
 		return logFileEntities;
+	}
+	
+	public static String construct(LogfileEntity le) {
+		
+		String constructed = "["+le.getDate()+"] ["+le.getSessionId()+"] "
+				+le.getAppName()+"."+le.getSeverity()+": "+le.getText()+" ["
+				+le.getContext()+"]";
+		return constructed;
 	}
 }
