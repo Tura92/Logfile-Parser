@@ -1,4 +1,4 @@
-package logdata;
+package logcontrol;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,12 +8,14 @@ import java.util.ArrayList;
 
 import lombok.Data;
 
+/*
+ * 
+ * **/
 @Data
 public class LogfileReader {
 	
 	BufferedReader br;
 	File logfile;
-	
 	ArrayList<String> rawEntityStrings = new ArrayList<>();
 	
 	public LogfileReader(File logfile) {

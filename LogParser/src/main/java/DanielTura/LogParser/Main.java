@@ -24,10 +24,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import logcontrol.LogfileParser;
+import logcontrol.LogfileReader;
+import logcontrol.LogfileWriter;
 import logdata.LogfileEntity;
-import logdata.LogfileParser;
-import logdata.LogfileReader;
-import logdata.LogfileWriter;
  
 public class Main extends Application {
    
@@ -37,6 +37,10 @@ public class Main extends Application {
 	Label filterByLbl;
 	ComboBox<String> filterCB;
 	TextField filterTF;
+	
+	HBox hBox;
+	VBox vBox;
+	Scene scene;
 	
 	ObservableList<LogfileEntity> observableEntities;
 	FilteredList<LogfileEntity> filteredData;
@@ -50,79 +54,68 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws FileNotFoundException {
        window = primaryStage;
        window.setTitle("Logfile Parser");
-       
-       //Date column
-       TableColumn<LogfileEntity, String> dateColumn = createColumn("Date", "date", 150);
-       
-       //SessionID column
-       TableColumn<LogfileEntity, String> sessionIdColumn = createColumn("SessionID", "sessionId", 150);
-       
-       //AppName column
-       TableColumn<LogfileEntity, String> appNameColumn = createColumn("App Name", "appName", 100);
-       
-       //Severity column
-       TableColumn<LogfileEntity, String> severityColumn = createColumn("Severity", "severity", 100);
-       
-       //Text column
-       TableColumn<LogfileEntity, String> textColumn = createColumn("Text", "text", 200);
-       
-       //Context column
-       TableColumn<LogfileEntity, String> contextColumn = createColumn("Context", "context", 200);
-       
-       //Hier kommen die Input Elemente hin
-       //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-       
-       loadFileBtn = new Button("Load file");
-       saveBtn = new Button("Save file");
-       
-       filterByLbl = new Label("Filter by:");
-       filterCB = new ComboBox<>();
-       filterCB.getItems().addAll("SessionID", "AppName", "Severity");
-       filterCB.getSelectionModel().select(0);
-       
-       filterTF = new TextField();
-       
-       
-       HBox hBox = new HBox();
-       hBox.setPadding(new Insets(10, 10, 10, 10));
-       hBox.setSpacing(10);
-       hBox.getChildren().addAll(loadFileBtn, filterByLbl, filterCB, filterTF,saveBtn);
-       
-       
-       //Ende Input Elemente
-       
-       table = new TableView<>();
-       
-       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, severityColumn,textColumn, contextColumn);
-       
-       VBox vBox = new VBox();
-       vBox.getChildren().addAll(table, hBox);
-       
-       Scene scene = new Scene(vBox);
+            
+       initComponents();
+ 
        window.setScene(scene);
        window.show();
+       window.setResizable(false);
        
        addFunctionality();
        
     }
 	
-	public TableColumn<LogfileEntity, String> createColumn(String colName, String entityAttribute, double minWidth) {
+	public void initComponents() {
+			
+			//Date column
+	       TableColumn<LogfileEntity, String> dateColumn = createColumn("Date", "date", 150);
+	       
+	       //SessionID column
+	       TableColumn<LogfileEntity, String> sessionIdColumn = createColumn("SessionID", "sessionId", 150);
+	       
+	       //AppName column
+	       TableColumn<LogfileEntity, String> appNameColumn = createColumn("App Name", "appName", 100);
+	       
+	       //Severity column
+	       TableColumn<LogfileEntity, String> severityColumn = createColumn("Severity", "severity", 100);
+	       
+	       //Text column
+	       TableColumn<LogfileEntity, String> textColumn = createColumn("Text", "text", 200);
+	       
+	       //Context column
+	       TableColumn<LogfileEntity, String> contextColumn = createColumn("Context", "context", 200);     
+	       
+	       loadFileBtn = new Button("Load file");
+	       saveBtn = new Button("Save file");
+	       
+	       filterByLbl = new Label("Filter by:");
+	       filterCB = new ComboBox<>();
+	       filterCB.getItems().addAll("SessionID", "AppName", "Severity");
+	       filterCB.getSelectionModel().select(0);
+	       
+	       filterTF = new TextField();
+	            
+	       hBox = new HBox();
+	       hBox.setPadding(new Insets(10, 10, 10, 10));
+	       hBox.setSpacing(10);
+	       hBox.getChildren().addAll(loadFileBtn, filterByLbl, filterCB, filterTF,saveBtn);
+	       
+	       table = new TableView<>();
+	       
+	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, severityColumn,textColumn, contextColumn);
+	       
+	       vBox = new VBox();
+	       vBox.getChildren().addAll(table, hBox);
+	       scene = new Scene(vBox);
+	}
+	
+	private TableColumn<LogfileEntity, String> createColumn(String colName, String entityAttribute, double minWidth) {
 		 TableColumn<LogfileEntity, String> tempColumn = new TableColumn<>(colName);
-	     tempColumn.setMinWidth(minWidth);
+	     tempColumn.setMinWidth(minWidth); 
 	     tempColumn.setCellValueFactory(new PropertyValueFactory<>(entityAttribute));
 	     return tempColumn;
 	}
-	
-	public void loadFile() throws IOException {
 		
-		FileChooser fc = new FileChooser();
-		File selectedFile = fc.showOpenDialog(window);
-		
-		LogfileReader reader = new LogfileReader(selectedFile);
-		
-		
-	}
-	
 	public ObservableList<LogfileEntity> getEntities() {
 		
 		observableEntities = FXCollections.observableArrayList();
@@ -133,24 +126,27 @@ public class Main extends Application {
 		LogfileParser lp = new LogfileParser();
 		
 		FileChooser fc = new FileChooser();
-		
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Logfiles (*.log)", "*.log"));
 		
 		File logfile = fc.showOpenDialog(window);
 		
-		LogfileReader lr = new LogfileReader(logfile);
-		
-		try {
-			lr.loadFile();
-			lr.readFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(logfile != null) {
+			LogfileReader lr = new LogfileReader(logfile);
+			
+			try {
+				
+				lr.loadFile();
+				lr.readFile();
+			} catch (IOException e) {
+				
+			}
+			
+			rawEntities = lr.getRawEntityStrings();	
+			finalEntities = LogfileParser.parseData(rawEntities);
+			finalEntities.forEach(entity -> observableEntities.add(entity));
 		}
 		
-		rawEntities = lr.getRawEntityStrings();	
-		finalEntities = LogfileParser.parseData(rawEntities);
-		finalEntities.forEach(entity -> observableEntities.add(entity));
+		
 		
 		return observableEntities;
 	}
@@ -190,16 +186,15 @@ public class Main extends Application {
 		table.setItems(sortedData);
 	}
 	
-	
-	
 	public void addFunctionality() {
 		loadFileBtn.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
 				
-				table.setItems(getEntities());
+				table.setItems(getEntities());				
 				initFiltering();
+									
 			}
 		});
 		
@@ -216,14 +211,11 @@ public class Main extends Application {
 				FileChooser fc = new FileChooser();
 				fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("LOG", "*.log"));
 				File destination = fc.showSaveDialog(window);
-				
-				
-				
+
 				if(destination != null) {
 					try {
 						LogfileWriter.writeBackToFile(selectedEntities, destination);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
+					} catch (FileNotFoundException e) {						
 						e.printStackTrace();
 					}
 				}

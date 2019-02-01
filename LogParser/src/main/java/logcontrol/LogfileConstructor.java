@@ -1,6 +1,6 @@
-package logdata;
+package logcontrol;
 
-import java.util.ArrayList;
+import logdata.LogfileEntity;
 
 public class LogfileConstructor {
 	
@@ -10,12 +10,5 @@ public class LogfileConstructor {
 				+le.getAppName()+"."+le.getSeverity()+": "+le.getText()+" ["
 				+le.getContext()+"]";
 		return constructed;
-	}
-	
-	public static ArrayList<String> constructAll(ArrayList<LogfileEntity> ale) {
-		
-		ArrayList<String> allConstructed = new ArrayList<String>();
-		ale.forEach(entity -> allConstructed.add(construct(entity)));
-		return allConstructed;
 	}
 }

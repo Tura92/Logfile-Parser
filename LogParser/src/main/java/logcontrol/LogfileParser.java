@@ -1,8 +1,9 @@
-package logdata;
+package logcontrol;
 
 
 import java.util.ArrayList;
 
+import logdata.LogfileEntity;
 import lombok.Getter;
 
 @Getter
