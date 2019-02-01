@@ -1,42 +1,17 @@
 package logdata;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 
-import lombok.Data;
 import lombok.Getter;
 
-@Data public class LogfileParser {
-	
-	private LogfileReader logReader;;
-	@Getter
-	private ArrayList<String> rawDataStrings;
-	private ArrayList<LogfileData> data;
-	
-	public LogfileParser() {
-		try {
-			initLists();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void initLists() throws IOException {
+@Getter
+public class LogfileParser {
 		
-		logReader = new LogfileReader("logfile.log");
+	public static ArrayList<LogfileEntity> parseData(ArrayList<String> rawEntities) {
 		
-		rawDataStrings = logReader.getFileData();
-		data = new ArrayList<>();
-	}
-	
-	public LogfileData buildData(String date, String sessionId, String appName, 
-					String severity, String text, String context) {
+		ArrayList<LogfileEntity> logFileEntities = new ArrayList<>();
 		
-		return new LogfileData(date, sessionId, appName, severity, text, context);
-	}
-	
-	 public void parseData() {
 		String date = null;
 		String sessionId= null;
 		String appName= null;
@@ -44,31 +19,38 @@ import lombok.Getter;
 		String text= null;
 		String context= null;
 		
-		//rds is the raw Data String for a log entry
-		for(String rds : rawDataStrings) {
+		//res is the raw Data String for a log entity
+		for(String res : rawEntities) {
 			
-			date = rds.substring(1, rds.indexOf("]"));
-			rds = rds.substring(rds.indexOf("]")+2);
+			date = res.substring(1, res.indexOf("]"));		
+			res = res.substring(res.indexOf("]")+2);
 			
-			sessionId = rds.substring(1, rds.indexOf("]"));
-			rds = rds.substring(rds.indexOf("]")+2);
+			sessionId = res.substring(1, res.indexOf("]"));
+			res = res.substring(res.indexOf("]")+2);
 			
-			appName = rds.substring(0, rds.indexOf("."));
-			rds = rds.substring(rds.indexOf(".")+1);
+			appName = res.substring(0, res.indexOf("."));
+			res = res.substring(res.indexOf(".")+1);
 			
-			severity = rds.substring(0, rds.indexOf(":"));
-			rds = rds.substring(rds.indexOf(":")+2);
+			severity = res.substring(0, res.indexOf(":"));
+			res = res.substring(res.indexOf(":")+2);
 			
-			text = rds.substring(0, rds.indexOf("[") -1);
-			rds = rds.substring(rds.indexOf("["));
+			text = res.substring(0, res.indexOf("[") -1);
+			res = res.substring(res.indexOf("["));
 			
-			context = rds.substring(1, rds.length()-1);
+			context = res.substring(1, res.length()-1);
 			
-			data.add(buildData(date, sessionId, appName, severity, text, context));
-			
+			//logFileEntities.add(buildEntity(date, sessionId, appName, severity, text, context));
+			logFileEntities.add(LogfileEntity.builder()
+					.date(date)
+					.sessionId(sessionId)
+					.appName(appName)
+					.severity(severity)
+					.text(text)
+					.context(context)
+					.build()
+			);	
 		}
+		
+		return logFileEntities;
 	}
-	 
-	
-	
 }

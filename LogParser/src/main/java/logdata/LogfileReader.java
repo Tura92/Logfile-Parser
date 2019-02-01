@@ -1,35 +1,40 @@
 package logdata;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import lombok.Data;
+
+@Data
 public class LogfileReader {
-	BufferedReader br;
-	ArrayList<String> rawDataStrings = new ArrayList<>();
 	
-	public LogfileReader(String logfile) throws IOException  {
-		loadFile(logfile);
+	BufferedReader br;
+	File logfile;
+	
+	ArrayList<String> rawEntityStrings = new ArrayList<>();
+	
+	public LogfileReader(File logfile) {
+		this.logfile = logfile;
+		
 	}
 	
-	public void loadFile(String logfile) throws IOException {
+	public void loadFile() throws IOException {
 		
 		br = new BufferedReader(new FileReader(logfile));
 		
+	}
+	
+	public void readFile() throws IOException {
 		String temp;
 		
 		while((temp = br.readLine()) != null) {
-			rawDataStrings.add(temp);
+			rawEntityStrings.add(temp);
 		}
 		
 		br.close();
 	}
-	
-	public ArrayList<String> getFileData() {
-		return rawDataStrings;
-	}
-	
 	
 }
