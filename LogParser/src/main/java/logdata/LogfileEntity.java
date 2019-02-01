@@ -4,12 +4,6 @@ import logcontrol.LogfileConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-
-/**
- * Diese Klasse beinhaltet alle Attribute die aus den Logfiles
- * extrahiert werden können und die überschriebene Methode toString()
- * um diese wieder zu einem Logfileeintrag zu machen.
- * */
 @Data
 @Builder
 public class LogfileEntity {

@@ -108,13 +108,6 @@ public class Main extends Application {
 	       vBox.getChildren().addAll(table, hBox);
 	       scene = new Scene(vBox);
 	}
-	
-	private TableColumn<LogfileEntity, String> createColumn(String colName, String entityAttribute, double minWidth) {
-		 TableColumn<LogfileEntity, String> tempColumn = new TableColumn<>(colName);
-	     tempColumn.setMinWidth(minWidth); 
-	     tempColumn.setCellValueFactory(new PropertyValueFactory<>(entityAttribute));
-	     return tempColumn;
-	}
 		
 	public ObservableList<LogfileEntity> getEntities() {
 		
@@ -221,5 +214,12 @@ public class Main extends Application {
 				}
 			}
 		});
+	}
+	
+	private TableColumn<LogfileEntity, String> createColumn(String colName, String entityAttribute, double minWidth) {
+		 TableColumn<LogfileEntity, String> tempColumn = new TableColumn<>(colName);
+	     tempColumn.setMinWidth(minWidth); 
+	     tempColumn.setCellValueFactory(new PropertyValueFactory<>(entityAttribute));
+	     return tempColumn;
 	}
 } 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import lombok.Data;
 
 /*
- * 
+ * Diese Klasse wird benötigt um die Logfiles auszulesen
  * **/
 @Data
 public class LogfileReader {

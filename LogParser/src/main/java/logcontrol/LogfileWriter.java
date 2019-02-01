@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/*
+ * Diese Klasse wird benötigt um die Logfiles zu schreiben
+ * **/
 public class LogfileWriter {
 	
 	private static PrintWriter logfileWriter;
