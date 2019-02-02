@@ -25,14 +25,15 @@ public class LogfileParser {
 		String text= null;
 		String context= null;
 		
+		
 		//res is the raw Data String for a log entity
 		for(String res : rawEntities) {
 			
 			date = res.substring(1, res.indexOf("]"));		
-			res = res.substring(res.indexOf("]")+2);
+			res = res.substring(res.indexOf("] ")+2);
 			
 			sessionId = res.substring(1, res.indexOf("]"));
-			res = res.substring(res.indexOf("]")+2);
+			res = res.substring(res.indexOf("] ")+2);
 			
 			appName = res.substring(0, res.indexOf("."));
 			res = res.substring(res.indexOf(".")+1);
@@ -54,17 +55,13 @@ public class LogfileParser {
 					.text(text)
 					.context(context)
 					.build()
-			);	
+			);
+			
+			
 		}
 		
 		return logFileEntities;
 	}
 	
-	public static String construct(LogfileEntity le) {
-		
-		String constructed = "["+le.getDate()+"] ["+le.getSessionId()+"] "
-				+le.getAppName()+"."+le.getSeverity()+": "+le.getText()+" ["
-				+le.getContext()+"]";
-		return constructed;
-	}
+	
 }

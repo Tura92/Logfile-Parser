@@ -18,7 +18,10 @@ import lombok.Data;
 	
 	@Override
 	public String toString() {
-		return LogfileParser.construct(this);
+		String constructed = "["+this.getDate()+"] ["+this.getSessionId()+"] "
+				+this.getAppName()+"."+this.getSeverity()+": "+this.getText()+" ["
+				+this.getContext()+"]";
+		return constructed;
 	}
 	
 }
