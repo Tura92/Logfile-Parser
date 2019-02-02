@@ -1,4 +1,4 @@
-package logcontrol;
+package logcontrolOLD;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,15 +15,10 @@ import lombok.Data;
 public class LogfileReader {
 	
 	BufferedReader br;
-	File logfile;
 	ArrayList<String> rawEntityStrings = new ArrayList<>();
+
 	
-	public LogfileReader(File logfile) {
-		this.logfile = logfile;
-		
-	}
-	
-	public void loadFile() throws IOException {
+	public void loadFile(File logfile) throws IOException {
 		
 		br = new BufferedReader(new FileReader(logfile));
 		

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -12,6 +13,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -26,25 +28,39 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import logcontrol.LogfileParser;
-import logcontrol.LogfileReader;
-import logcontrol.LogfileWriter;
+import logcontrolOLD.LogfileParser;
+import logcontrolOLD.LogfileReader;
+import logcontrolOLD.LogfileWriter;
 import logdata.LogfileEntity;
  
 public class Main extends Application {
-   
+	
+	//Hauptfenster
 	Stage window;
+	
+	//Tabelle zum Anzeigen des Logfiles
 	TableView<LogfileEntity> table;
+	
+	//Load file Button und Save file Button 
 	Button loadFileBtn, saveBtn;
+	
+	//Label das "Filter by:" anzeigt
 	Label filterByLbl;
+	
+	//ComboBox zum Auswählen des Filters
 	ComboBox<String> filterCB;
+	
+	//Das Textfeld in den der gesuchte Eintrag eingegeben wird
 	TextField filterTF;
 	
 	HBox hBox;
 	VBox vBox;
 	Scene scene;
 	
+	//Diese Liste nimmt die Einträge des Logfiles und macht sie Observable
 	ObservableList<LogfileEntity> observableEntities;
+	
+	//Die Liste
 	FilteredList<LogfileEntity> filteredData;
 	
 	
@@ -54,19 +70,23 @@ public class Main extends Application {
  
 	@Override
     public void start(Stage primaryStage) throws FileNotFoundException {
+      
        window = primaryStage;
        window.setTitle("Logfile Parser");
-            
+       
        initComponents();
- 
+       
        window.setScene(scene);
        window.show();
        window.setResizable(false);
+       
        
        addFunctionality();
        
     }
 	
+	
+	@SuppressWarnings("unchecked")
 	public void initComponents() {
 			
 			//Date column
@@ -85,8 +105,10 @@ public class Main extends Application {
 	       TableColumn<LogfileEntity, String> textColumn = createColumn("Text", "text", 200);
 	       
 	       //Context column
-	       TableColumn<LogfileEntity, String> contextColumn = createColumn("Context", "context", 200);     
+	       TableColumn<LogfileEntity, String> contextColumn = createColumn("Context", "context", 200);
 	       
+	       table = new TableView<>();
+	            
 	       loadFileBtn = new Button("Load file");
 	       saveBtn = new Button("Save file");
 	       
@@ -101,13 +123,11 @@ public class Main extends Application {
 	       hBox.setPadding(new Insets(10, 10, 10, 10));
 	       hBox.setSpacing(10);
 	       hBox.getChildren().addAll(loadFileBtn, filterByLbl, filterCB, filterTF,saveBtn);
-	       
-	       table = new TableView<>();
-	       
+	             
 	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, severityColumn,textColumn, contextColumn);
-	       
+	       	       
 	       vBox = new VBox();
-	       vBox.getChildren().addAll(table, hBox);
+	       vBox.getChildren().addAll(hBox,table);
 	       scene = new Scene(vBox);
 	}
 		
@@ -115,10 +135,12 @@ public class Main extends Application {
 		
 		observableEntities = FXCollections.observableArrayList();
 		
+		/*Dieses Attribut speichert die Fertigen Entities um sie am Ende
+		*in die ObservableList reinzuschieben
+		*/
 		ArrayList<LogfileEntity> finalEntities = new ArrayList<>();
-		ArrayList<String> rawEntities = new ArrayList<>();
 		
-		LogfileParser lp = new LogfileParser();
+		ArrayList<String> rawEntities = new ArrayList<>();
 		
 		FileChooser fc = new FileChooser();
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Logfiles (*.log)", "*.log"));
@@ -126,18 +148,40 @@ public class Main extends Application {
 		File logfile = fc.showOpenDialog(window);
 		
 		if(logfile != null) {
-			LogfileReader lr = new LogfileReader(logfile);
+			LogfileReader lr = new LogfileReader();
 			
 			try {
-				
-				lr.loadFile();
+				lr.loadFile(logfile);
 				lr.readFile();
 			} catch (IOException e) {
 				
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Fehler");
+				alert.setHeaderText(null);
+				alert.setContentText("Fehler beim Laden der Datei!");
+				alert.showAndWait();
+				
 			}
 			
-			rawEntities = lr.getRawEntityStrings();	
-			finalEntities = LogfileParser.parseData(rawEntities);
+			rawEntities = lr.getRawEntityStrings();
+			
+			/*Es wird versucht das File zu parsen. Es kann eine StringIndexOutOfBoundsException
+			*geworfen werden falls das Logfileformat nicht korrekt ist. In diesem Fall wird
+			*der Benutzer gewarnt.
+			*/
+			try {
+				finalEntities = LogfileParser.parseData(rawEntities);
+			} catch (StringIndexOutOfBoundsException exc) {
+				
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Logfileformat Fehlerhaft");
+				alert.setHeaderText(null);
+				alert.setContentText("Das ausgewählte Logfile hat nicht das korrekte Format!");
+				alert.showAndWait();
+			  
+			}
+			
+			
 			finalEntities.forEach(entity -> observableEntities.add(entity));
 		}
 		
@@ -155,13 +199,14 @@ public class Main extends Application {
               
             	String filterValue = "";
             	
+            	//Hier wird der Filter umgestellt
             	switch(filterCB.getValue()) {
             		case "SessionID": filterValue = entity.getSessionId(); break;
             		case "AppName": filterValue = entity.getAppName(); break;
             		case "Severity": filterValue = entity.getSeverity(); break;
             	}
             	
-            	// If filter text is empty, display all Logfileentities.
+            	// Wenn Filtertext leer: zeige alle Logfileentities an
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
@@ -207,7 +252,7 @@ public class Main extends Application {
 				fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("LOG", "*.log"));
 				File destination = fc.showSaveDialog(window);
 
-				if(destination != null) {
+				if(destination != null && !selectedEntities.isEmpty()) {
 					try {
 						LogfileWriter.writeBackToFile(selectedEntities, destination);
 						Alert alert = new Alert(AlertType.INFORMATION);
@@ -232,4 +277,6 @@ public class Main extends Application {
 	     tempColumn.setCellValueFactory(new PropertyValueFactory<>(entityAttribute));
 	     return tempColumn;
 	}
+	
+	
 } 
