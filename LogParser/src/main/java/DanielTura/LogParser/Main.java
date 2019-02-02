@@ -28,9 +28,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import logcontrolOLD.LogfileParser;
-import logcontrolOLD.LogfileReader;
-import logcontrolOLD.LogfileWriter;
+import logcontrol.LogfileParser;
+import logcontrol.LogfileReader;
+import logcontrol.LogfileWriter;
 import logdata.LogfileEntity;
  
 public class Main extends Application {

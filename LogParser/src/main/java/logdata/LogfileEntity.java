@@ -1,6 +1,6 @@
 package logdata;
 
-import logcontrolOLD.LogfileParser;
+import logcontrol.LogfileParser;
 import lombok.Builder;
 import lombok.Data;
 
