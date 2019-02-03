@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,7 +12,6 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -60,7 +58,7 @@ public class Main extends Application {
 	//Diese Liste nimmt die Einträge des Logfiles und macht sie Observable
 	ObservableList<LogfileEntry> observableEntities;
 	
-	//Die Liste
+	//Die Liste in der nur die gefilterten Einträge stehen
 	FilteredList<LogfileEntry> filteredData;
 	
 	
@@ -86,7 +84,6 @@ public class Main extends Application {
     }
 	
 	
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 			
 			//Date column
@@ -143,7 +140,7 @@ public class Main extends Application {
 		/*Dieses Attribut speichert die Fertigen Entities um sie am Ende
 		*in die ObservableList reinzuschieben
 		*/
-		ArrayList<LogfileEntry> finalEntities = new ArrayList<>();
+		ArrayList<LogfileEntry> parsedEntries = new ArrayList<>();
 		
 		ArrayList<String> rawEntities = new ArrayList<>();
 		
@@ -168,7 +165,7 @@ public class Main extends Application {
 				
 			}
 			
-			rawEntities = lr.getRawEntityStrings();
+			rawEntities = lr.getRawEntryStrings();
 			
 			/*Es wird versucht das File zu parsen. Es kann eine StringIndexOutOfBoundsException
 			*geworfen werden In diesem Fall wird der Benutzer gewarnt, dass etwas mit dem File
@@ -176,7 +173,7 @@ public class Main extends Application {
 			*/
 			try {
 				LogfileParser lp = new LogfileParser();
-				finalEntities = lp.parseData(rawEntities);
+				parsedEntries = lp.parseFile(rawEntities);
 			} catch (StringIndexOutOfBoundsException exc) {
 				
 				Alert alert = new Alert(AlertType.ERROR);
@@ -186,13 +183,10 @@ public class Main extends Application {
 				alert.showAndWait();
 			  
 			}
-			
-			
-			finalEntities.forEach(entity -> observableEntities.add(entity));
+						
+			parsedEntries.forEach(entity -> observableEntities.add(entity));
 		}
-		
-		
-		
+			
 		return observableEntities;
 	}
 	
@@ -283,13 +277,14 @@ public class Main extends Application {
 					} catch (FileNotFoundException e) {						
 						e.printStackTrace();
 					}
-				}
-				
-				
+				}			
 			}
 		});
 	}
 	
+	/**
+	 * Hilfsmethode um die Table Columns zu initialisieren
+	 * */
 	private TableColumn<LogfileEntry, String> createColumn(String colName, String entityAttribute, double minWidth) {
 		 TableColumn<LogfileEntry, String> tempColumn = new TableColumn<>(colName);
 	     tempColumn.setMinWidth(minWidth); 

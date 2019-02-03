@@ -3,10 +3,11 @@ package logdata;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- *Entity 
- * */
-@Data @Builder public class LogfileEntry {
+
+
+@Data 
+@Builder 
+public class LogfileEntry {
 	
 	private String date;
 	private String sessionId;

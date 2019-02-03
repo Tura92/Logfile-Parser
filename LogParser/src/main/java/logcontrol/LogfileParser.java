@@ -14,9 +14,9 @@ import lombok.Getter;
 @Getter
 public class LogfileParser {
 		
-	public ArrayList<LogfileEntry> parseData(ArrayList<String> rawEntities) {
+	public ArrayList<LogfileEntry> parseFile(ArrayList<String> rawEntities) {
 		
-		ArrayList<LogfileEntry> logFileEntities = new ArrayList<>();
+		ArrayList<LogfileEntry> logfileEntries = new ArrayList<>();
 		
 		String date = null;
 		String sessionId= null;
@@ -46,8 +46,8 @@ public class LogfileParser {
 			
 			context = res.substring(1, res.length()-1);
 			
-			//logFileEntities.add(buildEntity(date, sessionId, appName, severity, text, context));
-			logFileEntities.add(LogfileEntry.builder()
+			
+			logfileEntries.add(LogfileEntry.builder()
 					.date(date)
 					.sessionId(sessionId)
 					.appName(appName)
@@ -60,7 +60,7 @@ public class LogfileParser {
 			
 		}
 		
-		return logFileEntities;
+		return logfileEntries;
 	}
 	
 	public String parseBack(LogfileEntry le) {

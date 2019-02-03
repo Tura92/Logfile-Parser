@@ -15,7 +15,7 @@ import lombok.Data;
 public class LogfileReader {
 	
 	BufferedReader br;
-	ArrayList<String> rawEntityStrings = new ArrayList<>();
+	ArrayList<String> rawEntryStrings = new ArrayList<>();
 
 	
 	public void loadFile(File logfile) throws IOException {
@@ -28,7 +28,7 @@ public class LogfileReader {
 		String temp;
 		
 		while((temp = br.readLine()) != null) {
-			rawEntityStrings.add(temp);
+			rawEntryStrings.add(temp);
 		}
 		
 		br.close();
