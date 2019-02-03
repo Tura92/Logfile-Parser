@@ -76,7 +76,7 @@ public class Main extends Application {
        
        window.setScene(scene);
        window.show();
-       window.setResizable(false);
+       //window.setResizable(false);
        
        
        addFunctionality();
