@@ -120,8 +120,9 @@ public class Main extends Application {
 	       
 	       table = new TableView<>();
 	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, 
-	    		   severityColumn,textColumn, contextColumn);
-	       	       
+	    		   severityColumn,textColumn, contextColumn);	       
+	       table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+	       
 	       vBox = new VBox();
 	       vBox.getChildren().addAll(hBox,table);
 	       scene = new Scene(vBox); 
@@ -174,7 +175,7 @@ public class Main extends Application {
 			try {
 				LogfileParser lp = new LogfileParser();
 				parsedEntries = lp.parseFile(rawEntities);
-			} catch (StringIndexOutOfBoundsException exc) {
+			} catch (Exception exc) {
 				
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Logfileformat Fehlerhaft");

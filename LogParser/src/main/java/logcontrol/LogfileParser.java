@@ -29,6 +29,8 @@ public class LogfileParser {
 		//res is the raw Data String for a log entity
 		for(String res : rawEntities) {
 			
+			if(res.equals("")) {continue;}
+			
 			//Beispiel: [2019-01-01 07:00:00] [fmaks5318125zsfgd] app.INFO: Some long text ... [CONTEXT]
 			date = res.substring(1, res.indexOf("]"));		
 			res = res.substring(res.indexOf("]")+2);
