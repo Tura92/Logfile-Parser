@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -77,13 +78,11 @@ public class Main extends Application {
        window.setScene(scene);
        window.show();
        //window.setResizable(false);
-       
-       
+           
        addFunctionality();
        
     }
-	
-	
+		
 	private void initComponents() {
 			
 			//Date column
@@ -103,9 +102,7 @@ public class Main extends Application {
 	       
 	       //Context column
 	       TableColumn<LogfileEntry, String> contextColumn = createColumn("Context", "context", 200);
-	       
-	       table = new TableView<>();
-	             
+	                   
 	       loadFileBtn = new Button("Load file");
 	       saveBtn = new Button("Save file");
 	       
@@ -120,12 +117,15 @@ public class Main extends Application {
 	       hBox.setPadding(new Insets(10, 10, 10, 10));
 	       hBox.setSpacing(10);
 	       hBox.getChildren().addAll(loadFileBtn, filterByLbl, filterCB, filterTF,saveBtn);
-	             
-	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, severityColumn,textColumn, contextColumn);
+	       
+	       table = new TableView<>();
+	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, 
+	    		   severityColumn,textColumn, contextColumn);
 	       	       
 	       vBox = new VBox();
 	       vBox.getChildren().addAll(hBox,table);
-	       scene = new Scene(vBox);
+	       scene = new Scene(vBox); 
+	       
 	}
 	
 	/**
@@ -255,37 +255,45 @@ public class Main extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				
-				ArrayList<String> selectedEntities = new ArrayList<>();
-				LogfileParser lp = new LogfileParser();
-				table.getItems().forEach(entity -> {
-					selectedEntities.add(lp.parseBack(entity));
-				});
+				saveFile();
 				
-				FileChooser fc = new FileChooser();
-				fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("LOG", "*.log"));
-				File destination = fc.showSaveDialog(window);
-
-				if(destination != null && !selectedEntities.isEmpty()) {
-					try {
-						LogfileWriter.writeBackToFile(selectedEntities, destination);
-						Alert alert = new Alert(AlertType.INFORMATION);
-						alert.setTitle("Erfolgreich gespeichert");
-						alert.setHeaderText(null);
-						alert.setContentText("Es wurde eine Logdatei mit den modifizierten Ergebnissen erzeugt.");
-						alert.showAndWait();
-						
-					} catch (FileNotFoundException e) {						
-						e.printStackTrace();
-					}
-				}			
 			}
 		});
+	}
+	
+	private void saveFile() {
+		
+		ArrayList<String> selectedEntities = new ArrayList<>();
+		
+		LogfileParser lp = new LogfileParser();
+		
+		FileChooser fc = new FileChooser();
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("LOG", "*.log"));
+		File destination = fc.showSaveDialog(window);
+		
+		table.getItems().forEach(entity -> selectedEntities.add(lp.parseBack(entity)));
+	
+		if(destination != null && !selectedEntities.isEmpty()) {
+			try {
+				LogfileWriter.writeBackToFile(selectedEntities, destination);
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Erfolgreich gespeichert");
+				alert.setHeaderText(null);
+				alert.setContentText("Es wurde eine Logdatei mit den "
+						+ "modifizierten Ergebnissen erzeugt.");
+				alert.showAndWait();
+				
+			} catch (FileNotFoundException e) {						
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
 	 * Hilfsmethode um die Table Columns zu initialisieren
 	 * */
-	private TableColumn<LogfileEntry, String> createColumn(String colName, String entityAttribute, double minWidth) {
+	private TableColumn<LogfileEntry, String> createColumn(String colName, 
+			String entityAttribute, double minWidth) {
 		 TableColumn<LogfileEntry, String> tempColumn = new TableColumn<>(colName);
 	     tempColumn.setMinWidth(minWidth); 
 	     tempColumn.setCellValueFactory(new PropertyValueFactory<>(entityAttribute));

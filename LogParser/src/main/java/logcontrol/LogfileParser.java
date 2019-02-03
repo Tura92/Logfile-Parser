@@ -29,21 +29,27 @@ public class LogfileParser {
 		//res is the raw Data String for a log entity
 		for(String res : rawEntities) {
 			
+			//Beispiel: [2019-01-01 07:00:00] [fmaks5318125zsfgd] app.INFO: Some long text ... [CONTEXT]
 			date = res.substring(1, res.indexOf("]"));		
-			res = res.substring(res.indexOf("] ")+2);
+			res = res.substring(res.indexOf("]")+2);
 			
+			//Beispiel: [fmaks5318125zsfgd] app.INFO: Some long text ... [CONTEXT]
 			sessionId = res.substring(1, res.indexOf("]"));
-			res = res.substring(res.indexOf("] ")+2);
+			res = res.substring(res.indexOf("]")+2);
 			
+			//Beispiel: app.INFO: Some long text ... [CONTEXT]
 			appName = res.substring(0, res.indexOf("."));
 			res = res.substring(res.indexOf(".")+1);
 			
+			//Beispiel: INFO: Some long text ... [CONTEXT]
 			severity = res.substring(0, res.indexOf(":"));
 			res = res.substring(res.indexOf(":")+2);
 			
+			//Beispiel: Some long text ... [CONTEXT]
 			text = res.substring(0, res.indexOf("[") -1);
 			res = res.substring(res.indexOf("["));
 			
+			//Beispiel: [CONTEXT]
 			context = res.substring(1, res.length()-1);
 			
 			
@@ -55,9 +61,7 @@ public class LogfileParser {
 					.text(text)
 					.context(context)
 					.build()
-			);
-			
-			
+			);	
 		}
 		
 		return logfileEntries;
