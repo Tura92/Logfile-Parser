@@ -31,7 +31,7 @@ import javafx.stage.Stage;
 import logcontrol.LogfileParser;
 import logcontrol.LogfileReader;
 import logcontrol.LogfileWriter;
-import logdata.LogfileEntity;
+import logdata.LogfileEntry;
  
 public class Main extends Application {
 	
@@ -39,7 +39,7 @@ public class Main extends Application {
 	Stage window;
 	
 	//Tabelle zum Anzeigen des Logfiles
-	TableView<LogfileEntity> table;
+	TableView<LogfileEntry> table;
 	
 	//Load file Button und Save file Button 
 	Button loadFileBtn, saveBtn;
@@ -58,10 +58,10 @@ public class Main extends Application {
 	Scene scene;
 	
 	//Diese Liste nimmt die Einträge des Logfiles und macht sie Observable
-	ObservableList<LogfileEntity> observableEntities;
+	ObservableList<LogfileEntry> observableEntities;
 	
 	//Die Liste
-	FilteredList<LogfileEntity> filteredData;
+	FilteredList<LogfileEntry> filteredData;
 	
 	
     public static void main(String[] args) {
@@ -87,28 +87,28 @@ public class Main extends Application {
 	
 	
 	@SuppressWarnings("unchecked")
-	public void initComponents() {
+	private void initComponents() {
 			
 			//Date column
-	       TableColumn<LogfileEntity, String> dateColumn = createColumn("Date", "date", 150);
+	       TableColumn<LogfileEntry, String> dateColumn = createColumn("Date", "date", 150);
 	       
 	       //SessionID column
-	       TableColumn<LogfileEntity, String> sessionIdColumn = createColumn("SessionID", "sessionId", 150);
+	       TableColumn<LogfileEntry, String> sessionIdColumn = createColumn("SessionID", "sessionId", 150);
 	       
 	       //AppName column
-	       TableColumn<LogfileEntity, String> appNameColumn = createColumn("App Name", "appName", 100);
+	       TableColumn<LogfileEntry, String> appNameColumn = createColumn("App Name", "appName", 100);
 	       
 	       //Severity column
-	       TableColumn<LogfileEntity, String> severityColumn = createColumn("Severity", "severity", 100);
+	       TableColumn<LogfileEntry, String> severityColumn = createColumn("Severity", "severity", 100);
 	       
 	       //Text column
-	       TableColumn<LogfileEntity, String> textColumn = createColumn("Text", "text", 200);
+	       TableColumn<LogfileEntry, String> textColumn = createColumn("Text", "text", 200);
 	       
 	       //Context column
-	       TableColumn<LogfileEntity, String> contextColumn = createColumn("Context", "context", 200);
+	       TableColumn<LogfileEntry, String> contextColumn = createColumn("Context", "context", 200);
 	       
 	       table = new TableView<>();
-	            
+	             
 	       loadFileBtn = new Button("Load file");
 	       saveBtn = new Button("Save file");
 	       
@@ -130,15 +130,20 @@ public class Main extends Application {
 	       vBox.getChildren().addAll(hBox,table);
 	       scene = new Scene(vBox);
 	}
-		
-	public ObservableList<LogfileEntity> getEntities() {
+	
+	/**
+	 * * Die Entities werden mit dieser Methode in die ObservableList geladen
+	 * Der Aufruf dieser Methode erfolgt beim Klicken auf den Load File Button
+	 * @return
+	 */
+	private ObservableList<LogfileEntry> getEntries() {
 		
 		observableEntities = FXCollections.observableArrayList();
 		
 		/*Dieses Attribut speichert die Fertigen Entities um sie am Ende
 		*in die ObservableList reinzuschieben
 		*/
-		ArrayList<LogfileEntity> finalEntities = new ArrayList<>();
+		ArrayList<LogfileEntry> finalEntities = new ArrayList<>();
 		
 		ArrayList<String> rawEntities = new ArrayList<>();
 		
@@ -166,11 +171,12 @@ public class Main extends Application {
 			rawEntities = lr.getRawEntityStrings();
 			
 			/*Es wird versucht das File zu parsen. Es kann eine StringIndexOutOfBoundsException
-			*geworfen werden falls das Logfileformat nicht korrekt ist. In diesem Fall wird
-			*der Benutzer gewarnt.
+			*geworfen werden In diesem Fall wird der Benutzer gewarnt, dass etwas mit dem File
+			*nicht in Ordnung ist.
 			*/
 			try {
-				finalEntities = LogfileParser.parseData(rawEntities);
+				LogfileParser lp = new LogfileParser();
+				finalEntities = lp.parseData(rawEntities);
 			} catch (StringIndexOutOfBoundsException exc) {
 				
 				Alert alert = new Alert(AlertType.ERROR);
@@ -190,7 +196,7 @@ public class Main extends Application {
 		return observableEntities;
 	}
 	
-	public void initFiltering() {
+	private void initFiltering() {
 		
 		filteredData = new FilteredList<>(observableEntities, p -> true);
 		
@@ -214,38 +220,51 @@ public class Main extends Application {
                 String lowerCaseFilter = newValue.toLowerCase();
                 
                 if (filterValue.toLowerCase().startsWith(lowerCaseFilter)) {
-                    return true; // Filter matches Textfield Value.
+                    return true; // Filter passt zum filterTF Eintrag.
                 } 
-                return false; // Does not match.
+                return false; // Passt nicht.
             	       
             });
         });
 		
-		SortedList<LogfileEntity> sortedData = new SortedList<>(filteredData);
+		SortedList<LogfileEntry> sortedData = new SortedList<>(filteredData);
 		sortedData.comparatorProperty().bind(table.comparatorProperty());
 		table.setItems(sortedData);
 	}
 	
-	public void addFunctionality() {
+	private void addFunctionality() {
+		
+		/**
+		 * Beim Klick werden die Logfileentries in die Tabelle geladen und das
+		 * Filtern dieser Elemente wird initialisiert
+		 * */
 		loadFileBtn.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
 				
-				table.setItems(getEntities());				
+				table.setItems(getEntries());				
 				initFiltering();
 									
 			}
 		});
 		
+		/**
+		 * Save Button öffnet das Fenster zum speichern des Logfiles.
+		 * Es können nur .log Formate gespeichert werden, so dass der
+		 * Benutzer nur den Namen eingeben muss.
+		 * 
+		 * 
+		 * */
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				
 				ArrayList<String> selectedEntities = new ArrayList<>();
+				LogfileParser lp = new LogfileParser();
 				table.getItems().forEach(entity -> {
-					selectedEntities.add(entity.toString());
+					selectedEntities.add(lp.parseBack(entity));
 				});
 				
 				FileChooser fc = new FileChooser();
@@ -271,8 +290,8 @@ public class Main extends Application {
 		});
 	}
 	
-	private TableColumn<LogfileEntity, String> createColumn(String colName, String entityAttribute, double minWidth) {
-		 TableColumn<LogfileEntity, String> tempColumn = new TableColumn<>(colName);
+	private TableColumn<LogfileEntry, String> createColumn(String colName, String entityAttribute, double minWidth) {
+		 TableColumn<LogfileEntry, String> tempColumn = new TableColumn<>(colName);
 	     tempColumn.setMinWidth(minWidth); 
 	     tempColumn.setCellValueFactory(new PropertyValueFactory<>(entityAttribute));
 	     return tempColumn;

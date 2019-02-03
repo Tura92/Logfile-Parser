@@ -2,7 +2,7 @@ package logcontrol;
 
 import java.util.ArrayList;
 
-import logdata.LogfileEntity;
+import logdata.LogfileEntry;
 import lombok.Getter;
 
 /**
@@ -14,9 +14,9 @@ import lombok.Getter;
 @Getter
 public class LogfileParser {
 		
-	public static ArrayList<LogfileEntity> parseData(ArrayList<String> rawEntities) {
+	public ArrayList<LogfileEntry> parseData(ArrayList<String> rawEntities) {
 		
-		ArrayList<LogfileEntity> logFileEntities = new ArrayList<>();
+		ArrayList<LogfileEntry> logFileEntities = new ArrayList<>();
 		
 		String date = null;
 		String sessionId= null;
@@ -47,7 +47,7 @@ public class LogfileParser {
 			context = res.substring(1, res.length()-1);
 			
 			//logFileEntities.add(buildEntity(date, sessionId, appName, severity, text, context));
-			logFileEntities.add(LogfileEntity.builder()
+			logFileEntities.add(LogfileEntry.builder()
 					.date(date)
 					.sessionId(sessionId)
 					.appName(appName)
@@ -63,5 +63,10 @@ public class LogfileParser {
 		return logFileEntities;
 	}
 	
-	
+	public String parseBack(LogfileEntry le) {
+		String reconstructed = "["+le.getDate()+"] ["+le.getSessionId()+"] "
+				+le.getAppName()+"."+le.getSeverity()+": "+le.getText()+" ["
+				+le.getContext()+"]";
+		return reconstructed;
+	}
 }
