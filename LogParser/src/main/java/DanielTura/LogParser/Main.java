@@ -21,9 +21,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -106,12 +106,14 @@ public class Main extends Application {
 	       loadFileBtn = new Button("Load file");
 	       saveBtn = new Button("Save file");
 	       
+	       
 	       filterByLbl = new Label("Filter by:");
 	       filterCB = new ComboBox<>();
 	       filterCB.getItems().addAll("SessionID", "AppName", "Severity");
 	       filterCB.getSelectionModel().select(0);
 	       
 	       filterTF = new TextField();
+	       filterTF.setPromptText("Suche...");
 	            
 	       hBox = new HBox();
 	       hBox.setPadding(new Insets(10, 10, 10, 10));
@@ -122,9 +124,13 @@ public class Main extends Application {
 	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, 
 	    		   severityColumn,textColumn, contextColumn);	       
 	       table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+	       table.setMinHeight(300);
+	       table.prefHeightProperty().bind(window.heightProperty());
 	       
 	       vBox = new VBox();
 	       vBox.getChildren().addAll(hBox,table);
+	       
+	       
 	       scene = new Scene(vBox); 
 	       
 	}
