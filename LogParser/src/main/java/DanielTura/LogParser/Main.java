@@ -124,7 +124,7 @@ public class Main extends Application {
 	       table.getColumns().addAll(dateColumn, sessionIdColumn, appNameColumn, 
 	    		   severityColumn,textColumn, contextColumn);	       
 	       table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-	       table.setMinHeight(300);
+	       table.setMinHeight(500);
 	       table.prefHeightProperty().bind(window.heightProperty());
 	       
 	       vBox = new VBox();
