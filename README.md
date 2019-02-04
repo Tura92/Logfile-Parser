@@ -6,5 +6,5 @@ Kurze Erklärung zur Funktionalität:<br><br>
 <b>Textfeld</b>: In dieses Textfeld wird der gesuchte Eintrag eingegeben.<br><br>
 <b>Save file Button</b>: Dieser Button öffnet ein Explorerfenster um die Inhalte, so wie sie in der Tabelle angezeigt werden, zu exportieren.<br><br>
 <b>Sortiert</b> werden kann nach einem beliebigen Kriterium bei Klick auf eine der Kopfzeilen der Tabelle<br><br>
-
+<b>Screenshots befinden sich im Wiki.</b><br>
 <b>Beispiellogfile befindet sich im util package</b>
