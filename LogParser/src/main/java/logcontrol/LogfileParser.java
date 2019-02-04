@@ -6,15 +6,12 @@ import logdata.LogfileEntry;
 import lombok.Getter;
 
 /**
- * Diese Klasse ist der eigentlich Parser für die .log Dateien. 
- * Er besitzt nur eine statische Methode die die rohen Strings
- * aus den logs extrahiert und ein gespaltetes und verarbeitbares
- * Format wieder ausgibt.
+ * 
  * **/
 @Getter
 public class LogfileParser {
-		
-	public ArrayList<LogfileEntry> parseFile(ArrayList<String> rawEntities) throws Exception {
+	
+	public ArrayList<LogfileEntry> parseFile(ArrayList<String> rawEntry) throws Exception {
 		
 		ArrayList<LogfileEntry> logfileEntries = new ArrayList<>();
 		
@@ -27,7 +24,7 @@ public class LogfileParser {
 		
 		
 		//res is the raw Data String for a log entity
-		for(String res : rawEntities) {
+		for(String res : rawEntry) {
 			
 			//Beispiel: [2019-01-01 07:00:00] [fmaks5318125zsfgd] app.INFO: Some long text ... [CONTEXT]
 			date = res.substring(1, res.indexOf("] "));		
