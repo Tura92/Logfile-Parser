@@ -19,7 +19,7 @@ public class LogfileParser {
 	private String dateRegex = "^(\\[[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}\\])";
 	private String sessionIdRegex = "^(\\[[a-z0-9]{17}\\])";
 	private String nameAndSevRegex = "^(([a-zA-Z0-9]+)\\.((INFO)|(WARNING)|(ERROR)):)"; 
-	private String contextRegex = "\\[(.+)\\]";
+	private String contextRegex = "(\\[(.+)\\])$";
 	
 	
 	public ArrayList<LogfileEntry> parseFile(ArrayList<String> rawEntries) throws Exception {
