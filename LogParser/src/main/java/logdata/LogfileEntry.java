@@ -1,5 +1,7 @@
 package logdata;
 
+import java.util.Date;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,10 +9,10 @@ import lombok.Data;
 @Builder 
 public class LogfileEntry {
 	
-	private String date;
+	private Date date;
 	private String sessionId;
 	private String appName;
-	private String severity;
+	private Severity severity;
 	private String text;
 	private String context;
 	
