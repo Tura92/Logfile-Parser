@@ -3,7 +3,7 @@ package logview;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class Meldungsfenster {
+public class PopupWindow {
 	
 	public static void error(String head, String content) {
 		Alert alert = new Alert(AlertType.ERROR);

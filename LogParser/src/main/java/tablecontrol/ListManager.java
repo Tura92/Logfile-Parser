@@ -19,7 +19,7 @@ import logcontrol.LogfileParser;
 import logcontrol.LogfileReader;
 import logcontrol.LogfileWriter;
 import logdata.LogfileEntry;
-import logview.Meldungsfenster;
+import logview.PopupWindow;
 
 
 /**Der ListManager ist dafür zuständig, dass die Tabelle
@@ -62,21 +62,15 @@ public class ListManager {
 			try {
 				
 				lr.loadFile(logfile);
+				lr.readFile();
 						
 			} catch (IOException e) {
 				
-				Meldungsfenster.error("Fehler", "Fehler beim Laden der Datei.");					
+				PopupWindow.error("Error", e.getMessage());					
 			}
 			
-			//Hier wird versucht die Datei auszulesen
-			try {
-				
-				lr.readFile();
-				
-			} catch (IOException e) {
-				
-				Meldungsfenster.error("Fehler", "Fehler beim Lesen der Datei.");
-			}
+			
+			
 			
 			rawEntries = lr.getRawEntryStrings();
 			
@@ -90,7 +84,7 @@ public class ListManager {
 				exc.showMessageForUser();	
 				
 			} catch (Exception exc) {
-				Meldungsfenster.error("Fehler", "Unbekannter Fehler");
+				PopupWindow.error("Error", exc.getMessage());
 			} 				
 		}
 		
@@ -145,16 +139,16 @@ public class ListManager {
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("LOG", "*.log"));
 		File destination = fc.showSaveDialog(window);
 		
-		table.getItems().forEach(entity -> selectedEntities.add(lp.parseBack(entity)));
+		table.getItems().forEach(entity -> selectedEntities.add(entity.reconstruct()));
 	
 		if(destination != null && !selectedEntities.isEmpty()) {
 			try {
 				LogfileWriter.writeBackToFile(selectedEntities, destination);				
-				Meldungsfenster.info("Erfolgreich gespeichert", 
+				PopupWindow.info("Erfolgreich gespeichert", 
 						"Es wurde eine Logdatei mit den modifizierten Ergebnissen erzeugt.");
 				
 			} catch (FileNotFoundException e) {						
-				Meldungsfenster.error("Fehler", "Fehler beim speichern der Datei.");
+				PopupWindow.error("Error", "Fehler beim speichern der Datei.");
 			}
 		}
 	}		

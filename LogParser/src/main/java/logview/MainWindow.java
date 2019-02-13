@@ -89,7 +89,7 @@ public class MainWindow {
 		       filterCB.getSelectionModel().select(0);
 		       
 		       filterTF = new TextField();
-		       filterTF.setPromptText("Suche...");
+		       filterTF.setPromptText("Search...");
 		            
 		       topBar = new HBox();
 		       topBar.setPadding(new Insets(10, 10, 10, 10));

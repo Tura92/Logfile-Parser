@@ -5,6 +5,6 @@ public abstract class LogfileParserException extends Exception{
 	 * 
 	 */
 	private static final long serialVersionUID = 5895399752510151337L;
-	protected String head = "Fehler";
+	protected int ENTRY_INDEX;
 	public abstract void showMessageForUser();
 }

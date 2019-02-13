@@ -8,7 +8,9 @@ import java.util.regex.Pattern;
 
 import customExceptions.ContextFormatException;
 import customExceptions.DateFormatException;
-import customExceptions.NameSeverityFormatException;
+import customExceptions.NameFormatException;
+import customExceptions.SeverityFormatException;
+import customExceptions.TextFormatException;
 import customExceptions.SessionIdFormatException;
 import logdata.LogfileEntry;
 import logdata.Severity;
@@ -16,23 +18,25 @@ import logdata.Severity;
 
 public class LogfileParser {
 		
-	private String dateRegex = "^(\\[[\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2}\\])";
-	private String sessionIdRegex = "^(\\[[a-z0-9]{17}\\])";
-	private String nameAndSevRegex = "^(([a-zA-Z0-9]+)\\.((INFO)|(WARNING)|(ERROR)):)"; 
-	private String contextRegex = "(\\[(.+)\\])$";
+	private Pattern dateRegex = Pattern.compile("(\\[([\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2})\\])");
+	private Pattern sessionIdRegex = Pattern.compile("(\\[([a-z0-9]{17})\\])");
+	private Pattern nameRegex = Pattern.compile("(\\]\\W([a-zA-z0-9]+)\\.)");
+	private Pattern severityRegex = Pattern.compile("(\\.(INFO|ERROR|WARNING):)");
+	private Pattern textRegex = Pattern.compile("(:\\W(.+)\\W\\[)");
+	private Pattern contextRegex = Pattern.compile("(\\[([A-Z]+)\\])");
+	
 	
 	
 	public ArrayList<LogfileEntry> parseFile(ArrayList<String> rawEntries) throws Exception {
 		ArrayList<LogfileEntry> logfileEntries = new ArrayList<>();
-				
-		SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+		
+		String datePattern = "yyyy-MM-dd' 'HH:mm:ss";
+		SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
 		
 		String rawDate = null;
 		Date date = null;
 		
 		String sessionId = null;
-	
-		String[] nameAndSev= null;
 		String name = null;
 		String rawSeverity = null;		
 		Severity severity = null;
@@ -40,59 +44,38 @@ public class LogfileParser {
 		String text= null;		
 		String context= null;
 		
+		int ENTRY_INDEX = 1;
+		
 		for(String re : rawEntries) {	
+						
 			
-			String rest = re;	
+			rawDate = getRegexMatch(dateRegex, re, 2);
+			if(rawDate == null) throw new DateFormatException(ENTRY_INDEX);
+			date = dateFormat.parse(rawDate);
 			
-			if(checkSyntax(dateRegex, rest) == true) {
-				rawDate = getRegexMatch(dateRegex, rest);
-				rawDate = rawDate.substring(1, rawDate.indexOf("]"));
-				rest = rest.substring(rawDate.length() + 3);
-			}
-			else {
-				throw new DateFormatException();
-			}
 			
-			if(checkSyntax(sessionIdRegex, rest) == true) {
-				sessionId = getRegexMatch(sessionIdRegex, rest);
-				sessionId  = sessionId.substring(1, sessionId.indexOf("]"));
-				rest = rest.substring(sessionId.length() + 3);
-			}
-			else {
-				throw new SessionIdFormatException();
-			}
-				
-			if(checkSyntax(nameAndSevRegex, rest) == true)  {
-				nameAndSev = getRegexMatch(nameAndSevRegex, rest).split(Pattern.quote("."));
-				name = nameAndSev[0];		
-				rawSeverity = nameAndSev[1].replace(":", "");			
-				rest = rest.substring(name.length() + rawSeverity.length() + 3);
-			}
-			else {
-				throw new NameSeverityFormatException();
-			}
 			
-			if(checkSyntax(contextRegex, rest) == true)  {
-				context = getRegexMatch(contextRegex, rest);
-				text = rest.substring(0, rest.indexOf(context));
-				context = context.substring(1, context.length()-1);
-			}
-			else {
-				throw new ContextFormatException();
-			}
+			sessionId = getRegexMatch(sessionIdRegex, re, 2);
+			if(sessionId == null) throw new SessionIdFormatException(ENTRY_INDEX);
 			
-			//rawDate wird von String zu Date überführt
-			//Kann ParseException werfen. Sollte danke
-			//der Regexüberprüfung aber nicht.
-			date = myDateFormat.parse(rawDate);			
+			name = getRegexMatch(nameRegex, re, 2);
+			if(name == null) throw new NameFormatException(ENTRY_INDEX);
 			
-			//Hier die Severity einmal richtig parsen
+			rawSeverity = getRegexMatch(severityRegex, re, 2);
+			if(rawSeverity == null) throw new SeverityFormatException(ENTRY_INDEX);
 			for(Severity sev : Severity.values()) {
 				if(rawSeverity.equals(sev.toString())) {
 					severity = sev;
 				}
 			}
 			
+			text = getRegexMatch(textRegex, re, 2);
+			if(text == null) throw new TextFormatException(ENTRY_INDEX);
+			
+			context = getRegexMatch(contextRegex, re, 2);
+			if(context == null) throw new ContextFormatException(ENTRY_INDEX);
+	
+	
 			logfileEntries.add(LogfileEntry.builder()
 					.date(date)
 					.sessionId(sessionId)
@@ -102,39 +85,24 @@ public class LogfileParser {
 					.context(context)
 					.build()
 			);	
+			
+			ENTRY_INDEX++;
 		}
+		
 		return logfileEntries;
 	}
-	
-	public String parseBack(LogfileEntry le) {
-		String reconstructed = "["+le.getDate()+"] ["+le.getSessionId()+"] "
-				+le.getAppName()+"."+le.getSeverity()+": "+le.getText()+" ["
-				+le.getContext()+"]";
-		return reconstructed;
-	}
-	
-	private boolean checkSyntax(String theRegex, String str2Check) {
-		Pattern checkRegex = Pattern.compile(theRegex);
-		Matcher regexMatcher = checkRegex.matcher(str2Check);
+	 
+	/**
+	 * This function takes a regular expression und checks the entry for 
+	 * the needed data. It returns the data a String.  
+	 * */
+	private String getRegexMatch(Pattern theRegex, String str2Check, int groupIndex) {
+		
+		Matcher regexMatcher = theRegex.matcher(str2Check);
 				
-		while(regexMatcher.find()) {
+		if(regexMatcher.find()) {
 			if(regexMatcher.group().length() != 0) {				
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private String getRegexMatch(String theRegex, String str2Check) {
-		
-		Pattern checkRegex = Pattern.compile(theRegex);
-		Matcher regexMatcher = checkRegex.matcher(str2Check);
-		
-		
-		while(regexMatcher.find()) {
-			if(regexMatcher.group().length() != 0) {				
-				return regexMatcher.group().trim();
+				return regexMatcher.group(groupIndex).trim();
 			}
 		}
 		
