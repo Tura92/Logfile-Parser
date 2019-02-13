@@ -69,9 +69,6 @@ public class ListManager {
 				PopupWindow.error("Error", e.getMessage());					
 			}
 			
-			
-			
-			
 			rawEntries = lr.getRawEntryStrings();
 			
 			//Der kritischste Teil des Programms in dem alle möglichen Exceptions
@@ -148,7 +145,7 @@ public class ListManager {
 						"Es wurde eine Logdatei mit den modifizierten Ergebnissen erzeugt.");
 				
 			} catch (FileNotFoundException e) {						
-				PopupWindow.error("Error", "Fehler beim speichern der Datei.");
+				PopupWindow.error("Error", e.getMessage());
 			}
 		}
 	}		

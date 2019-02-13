@@ -94,7 +94,7 @@ public class LogfileParser {
 	 
 	/**
 	 * This function takes a regular expression und checks the entry for 
-	 * the needed data. It returns the data a String.  
+	 * the needed data. It returns the data as a String.  
 	 * */
 	private String getRegexMatch(Pattern theRegex, String str2Check, int groupIndex) {
 		
