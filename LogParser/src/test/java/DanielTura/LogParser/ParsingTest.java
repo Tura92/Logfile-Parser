@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import control.logcontrol.LogfileParser;
+import control.logcontrol.LogfileReader;
 import customExceptions.ContextFormatException;
 import customExceptions.DateFormatException;
 import customExceptions.LogfileParserException;
@@ -17,8 +19,6 @@ import customExceptions.NameFormatException;
 import customExceptions.SessionIdFormatException;
 import customExceptions.SeverityFormatException;
 import customExceptions.TextFormatException;
-import logcontrol.LogfileParser;
-import logcontrol.LogfileReader;
 import logdata.LogfileEntry;
 
 
@@ -35,12 +35,12 @@ class ParsingTest {
 	static File logContextError = new File("testResources/logfileContextError.log");
 	
 	static ArrayList<String> rawOkayEntries;
-	static ArrayList<String> rawDateEntries;
-	static ArrayList<String> rawSessionIdEntries;
-	static ArrayList<String> rawNameEntries;
-	static ArrayList<String> rawSeverityEntries;
-	static ArrayList<String> rawTextEntries;
-	static ArrayList<String> rawContextEntries;
+	static ArrayList<String> rawDateErrorEntries;
+	static ArrayList<String> rawSessionIdErrorEntries;
+	static ArrayList<String> rawNameErrorEntries;
+	static ArrayList<String> rawSeverityErrorEntries;
+	static ArrayList<String> rawTextErrorEntries;
+	static ArrayList<String> rawContextErrorEntries;
 	
 	static ArrayList<LogfileEntry> parsedOkayEntries;
 	static ArrayList<LogfileEntry> parsedDateEntries;
@@ -93,12 +93,12 @@ class ParsingTest {
 		contextErrorReader.readFile();
 		
 		rawOkayEntries = okayReader.getRawEntryStrings();
-		rawDateEntries = dateErrorReader.getRawEntryStrings();
-		rawSessionIdEntries = sessionIdErrorReader.getRawEntryStrings();
-		rawNameEntries = nameErrorReader.getRawEntryStrings();
-		rawSeverityEntries = severityErrorReader.getRawEntryStrings();
-		rawTextEntries = textErrorReader.getRawEntryStrings();
-		rawContextEntries = contextErrorReader.getRawEntryStrings();
+		rawDateErrorEntries = dateErrorReader.getRawEntryStrings();
+		rawSessionIdErrorEntries = sessionIdErrorReader.getRawEntryStrings();
+		rawNameErrorEntries = nameErrorReader.getRawEntryStrings();
+		rawSeverityErrorEntries = severityErrorReader.getRawEntryStrings();
+		rawTextErrorEntries = textErrorReader.getRawEntryStrings();
+		rawContextErrorEntries = contextErrorReader.getRawEntryStrings();
 		
 	}
 	
@@ -106,10 +106,10 @@ class ParsingTest {
 	@Test
 	void testOkay_shouldNotThrow() throws Exception  {
 		
-		LogfileParserException exc = null;
+		Exception exc = null;
 		try {
 			parsedOkayEntries = logfileParser.parseFile(rawOkayEntries);
-		} catch(LogfileParserException e) {
+		} catch(Exception e) {
 			exc = e;
 		}
 		
@@ -121,7 +121,7 @@ class ParsingTest {
 		
 		DateFormatException exc = null;
 		try {
-			parsedDateEntries = logfileParser.parseFile(rawDateEntries);
+			parsedDateEntries = logfileParser.parseFile(rawDateErrorEntries);
 		} catch(DateFormatException e) {
 			exc = e;
 		}
@@ -134,7 +134,7 @@ class ParsingTest {
 		
 		SessionIdFormatException exc = null;
 		try {
-			parsedSessionIdEntries = logfileParser.parseFile(rawSessionIdEntries);
+			parsedSessionIdEntries = logfileParser.parseFile(rawSessionIdErrorEntries);
 		} catch(SessionIdFormatException e) {
 			exc = e;
 		}
@@ -147,7 +147,7 @@ class ParsingTest {
 		
 		NameFormatException exc = null;
 		try {
-			parsedNameEntries = logfileParser.parseFile(rawNameEntries);
+			parsedNameEntries = logfileParser.parseFile(rawNameErrorEntries);
 		} catch(NameFormatException e) {
 			exc = e;
 		}
@@ -160,7 +160,7 @@ class ParsingTest {
 		
 		SeverityFormatException exc = null;
 		try {
-			parsedSeverityEntries = logfileParser.parseFile(rawSeverityEntries);
+			parsedSeverityEntries = logfileParser.parseFile(rawSeverityErrorEntries);
 		} catch(SeverityFormatException e) {
 			exc = e;
 		}
@@ -173,7 +173,7 @@ class ParsingTest {
 		
 		TextFormatException exc = null;
 		try {
-			parsedTextEntries = logfileParser.parseFile(rawTextEntries);
+			parsedTextEntries = logfileParser.parseFile(rawTextErrorEntries);
 		} catch(TextFormatException e) {
 			exc = e;
 		}
@@ -186,7 +186,7 @@ class ParsingTest {
 		
 		ContextFormatException exc = null;
 		try {
-			parsedContextEntries = logfileParser.parseFile(rawContextEntries);
+			parsedContextEntries = logfileParser.parseFile(rawContextErrorEntries);
 		} catch(ContextFormatException e) {
 			exc = e;
 		}

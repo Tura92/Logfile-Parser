@@ -1,4 +1,4 @@
-package logcontrol;
+package control.logcontrol;
 
 import java.io.File;
 import java.io.FileNotFoundException;

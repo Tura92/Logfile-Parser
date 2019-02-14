@@ -1,10 +1,13 @@
-package tablecontrol;
+package control.tablecontrol;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import control.logcontrol.LogfileParser;
+import control.logcontrol.LogfileReader;
+import control.logcontrol.LogfileWriter;
 import customExceptions.LogfileParserException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,9 +18,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import logcontrol.LogfileParser;
-import logcontrol.LogfileReader;
-import logcontrol.LogfileWriter;
 import logdata.LogfileEntry;
 import logview.PopupWindow;
 

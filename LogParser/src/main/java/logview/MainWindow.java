@@ -2,6 +2,7 @@ package logview;
 
 import java.util.Date;
 
+import control.tablecontrol.ListManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import logdata.LogfileEntry;
 import logdata.Severity;
-import tablecontrol.ListManager;
 
 public class MainWindow {
 	//Hauptfenster

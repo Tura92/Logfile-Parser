@@ -1,4 +1,4 @@
-package logcontrol;
+package control.logcontrol;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +17,9 @@ import logdata.Severity;
 
 
 public class LogfileParser {
-		
+	
+	
+	//Hier werden die Patterns für den Parser initialisiert
 	private Pattern dateRegex = Pattern.compile("(\\[([\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2})\\])");
 	private Pattern sessionIdRegex = Pattern.compile("(\\[([a-z0-9]{17})\\])");
 	private Pattern nameRegex = Pattern.compile("(\\]\\W([a-zA-z0-9]+)\\.)");
@@ -26,7 +28,15 @@ public class LogfileParser {
 	private Pattern contextRegex = Pattern.compile("(\\[([A-Z]+)\\])");
 	
 	
-	
+	/**
+	 * 
+	 * 
+	 * @param rawEntries Eine Liste mit Strings die der parser bearbeiten soll.
+	 * @throws Exception Kann Exceptions vom Typ <b>LogfileParserException</b> werfen
+	 * wenn beim Extrahieren der Logfileteile eine der Patterns kein Ergebnis
+	 * zurückgegeben hat. 
+	 * @return Gibt eine Liste mit den geparsten Einträgen aus.
+	 * */
 	public ArrayList<LogfileEntry> parseFile(ArrayList<String> rawEntries) throws Exception {
 		ArrayList<LogfileEntry> logfileEntries = new ArrayList<>();
 		
@@ -93,8 +103,15 @@ public class LogfileParser {
 	}
 	 
 	/**
-	 * This function takes a regular expression und checks the entry for 
-	 * the needed data. It returns the data as a String.  
+	 * Hilfsmethode für den LogfileParser.
+	 * 
+	 * @return Gibt den String zurück, der dem rohen Logfile
+	 * entnommen wurde.
+	 * 
+	 * @param theRegex Die Regular Expression nach der gesucht wird
+	 * @param str2Check Der String, der überprüft werden soll
+	 * @param groupIndex Der Index der Gruppe der Regular Expression
+	 * der den Teil enthält der vom Parser rausgefiltert werden soll.
 	 * */
 	private String getRegexMatch(Pattern theRegex, String str2Check, int groupIndex) {
 		
