@@ -1,5 +1,5 @@
 # Logfile-Parser
-<h1>Screenshots befinden sich im Wiki</h1><br><br>
+
 Kurze Erklärung zur Funktionalität:<br><br>
 <b>Load file Button</b>: Dieser Button öffnet ein Explorerfenster um eine .log Datei auszuwählen.<br><br>
 <b>FilterBy-SelectionBox</b>: Man kann in dieser SelectionBox auswählen nach welchen Kriterien gefiltert werden soll.<br><br> 
