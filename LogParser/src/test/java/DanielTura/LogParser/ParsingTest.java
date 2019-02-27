@@ -14,25 +14,23 @@ import control.logcontrol.LogfileParser;
 import control.logcontrol.LogfileReader;
 import customExceptions.ContextFormatException;
 import customExceptions.DateFormatException;
-import customExceptions.LogfileParserException;
 import customExceptions.NameFormatException;
 import customExceptions.SessionIdFormatException;
 import customExceptions.SeverityFormatException;
 import customExceptions.TextFormatException;
-import logdata.LogfileEntry;
 
 
 class ParsingTest {
 	
 	static LogfileParser logfileParser;
 	
-	static File logOkay = new File("testResources/logfileOKAY.log");
-	static File logDateError = new File("testResources/logfileDateError.log");
-	static File logSessionIdError = new File("testResources/logfileSessionIDError.log");
-	static File logNameError = new File("testResources/logfileNameError.log");
-	static File logSeverityError = new File("testResources/logfileSeverityError.log");
-	static File logTextError = new File("testResources/logfileTextError.log");
-	static File logContextError = new File("testResources/logfileContextError.log");
+	static File logOkay = new File("src/testResources/logfileOKAY.log");
+	static File logDateError = new File("src/testResources/logfileDateError.log");
+	static File logSessionIdError = new File("src/testResources/logfileSessionIDError.log");
+	static File logNameError = new File("src/testResources/logfileNameError.log");
+	static File logSeverityError = new File("src/testResources/logfileSeverityError.log");
+	static File logTextError = new File("src/testResources/logfileTextError.log");
+	static File logContextError = new File("src/testResources/logfileContextError.log");
 	
 	static ArrayList<String> rawOkayEntries;
 	static ArrayList<String> rawDateErrorEntries;
