@@ -1,9 +1,9 @@
 package control.logcontrol;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 
 import lombok.Data;
@@ -14,24 +14,24 @@ import lombok.Data;
 @Data
 public class LogfileReader {
 	
-	BufferedReader br;
+	LineNumberReader lnr;
 	ArrayList<String> rawEntryStrings = new ArrayList<>();
 
 	
 	public void loadFile(File logfile) throws IOException {
 		
-		br = new BufferedReader(new FileReader(logfile));
+		lnr = new LineNumberReader(new FileReader(logfile));
 		
 	}
 	
 	public void readFile() throws IOException {
 		String temp;
 		
-		while((temp = br.readLine()) != null) {
-			rawEntryStrings.add(temp);
+		while((temp = lnr.readLine()) != null) {
+			if (temp.length() != 0) rawEntryStrings.add(temp);
 		}
 		
-		br.close();
+		lnr.close();
 	}
 	
 }
