@@ -1,6 +1,6 @@
 # Logfile-Parser
 
-Es ist eine fertig JAR mit dem Programm im Projekt vorhanden
+LogParser-1.0.jar ist das ausführbare Programm
 
 Installation des Programms(Nur wer selbst kompilieren möchte):
 Maven zum Kompilieren vorausgesetzt (Unter Ubuntu standardmäßig drauf).
