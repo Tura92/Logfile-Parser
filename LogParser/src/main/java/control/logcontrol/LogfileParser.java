@@ -80,7 +80,8 @@ public class LogfileParser {
 			}
 			
 			text = getRegexMatch(textRegex, re, 2);
-			if(text == null) throw new TextFormatException(ENTRY_INDEX);
+			if(text == null || text.contains("[")
+					|| text.contains("]")) throw new TextFormatException(ENTRY_INDEX);
 			
 			context = getRegexMatch(contextRegex, re, 2);
 			if(context == null) throw new ContextFormatException(ENTRY_INDEX);
