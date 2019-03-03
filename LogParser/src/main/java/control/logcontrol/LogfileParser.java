@@ -21,11 +21,11 @@ public class LogfileParser {
 	
 	//Hier werden die Patterns für den Parser initialisiert
 	private Pattern dateRegex = Pattern.compile("(\\[([\\d]{4}-[\\d]{2}-[\\d]{2} [\\d]{2}:[\\d]{2}:[\\d]{2})\\])");
-	private Pattern sessionIdRegex = Pattern.compile("(\\[([a-z0-9]{17})\\])");
-	private Pattern nameRegex = Pattern.compile("(\\]\\W([a-zA-z0-9]+)\\.)");
+	private Pattern sessionIdRegex = Pattern.compile("(\\[([a-z 0-9]{17})\\])");
+	private Pattern nameRegex = Pattern.compile("(\\]\\s([a-z A-z 0-9]+)\\.)");
 	private Pattern severityRegex = Pattern.compile("(\\.(INFO|ERROR|WARNING):)");
-	private Pattern textRegex = Pattern.compile("(:\\W(.+)\\W\\[)");
-	private Pattern contextRegex = Pattern.compile("(\\[([A-Z]+)\\])");
+	private Pattern textRegex = Pattern.compile("(:\\s(.+)\\W\\[)");
+	private Pattern contextRegex = Pattern.compile("(\\[([A-Z 0-9 \\s]+)\\])");
 	
 	
 	/**

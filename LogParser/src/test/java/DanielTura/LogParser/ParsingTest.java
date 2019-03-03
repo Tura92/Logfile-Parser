@@ -24,13 +24,13 @@ class ParsingTest {
 	
 	static LogfileParser logfileParser;
 	
-	static File logOkay = new File("src/testResources/logfileOKAY.log");
-	static File logDateError = new File("src/testResources/logfileDateError.log");
-	static File logSessionIdError = new File("src/testResources/logfileSessionIDError.log");
-	static File logNameError = new File("src/testResources/logfileNameError.log");
-	static File logSeverityError = new File("src/testResources/logfileSeverityError.log");
-	static File logTextError = new File("src/testResources/logfileTextError.log");
-	static File logContextError = new File("src/testResources/logfileContextError.log");
+	static File logOkay = new File("src/test/resources/logfileOKAY.log");
+	static File logDateError = new File("src/test/resources/logfileDateError.log");
+	static File logSessionIdError = new File("src/test/resources/logfileSessionIDError.log");
+	static File logNameError = new File("src/test/resources/logfileNameError.log");
+	static File logSeverityError = new File("src/test/resources/logfileSeverityError.log");
+	static File logTextError = new File("src/test/resources/logfileTextError.log");
+	static File logContextError = new File("src/test/resources/logfileContextError.log");
 	
 	static ArrayList<String> rawOkayEntries;
 	static ArrayList<String> rawDateErrorEntries;
